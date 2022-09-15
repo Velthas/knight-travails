@@ -19,6 +19,27 @@ const boardMethods = {
     }
     return arr;
   },
+  legalMoves(position, step) {
+    // Returns array of legal moves from position
+    const legalMovements = [];
+    for (let i = 0; i < step.length; i++) {
+      if (position[0] + step[i][0] < 0 || position[0] + step[i][0] > this.size - 1
+        || position[1] + step[i][1] < 0 || position[1] + step[i][1] > this.size - 1) continue;
+      const legalPosition = [position[0] + step[i][0], position[1] + step[i][1]];
+      legalMovements.push(legalPosition);
+    }
+    return legalMovements;
+  },
+  setVisited(movesArray) {
+    // Sets a board position ([0, 0]) to visited
+    movesArray.forEach(
+      (move) => (this.board[move[0]][move[1]].isVisited = true),
+    );
+  },
+  filterVisited(move) {
+    // if move has already been made, returns false
+    return this.board[move[0]][move[1]].isVisited !== true;
+  },
 };
 
 const Knight = {
