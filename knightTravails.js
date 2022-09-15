@@ -20,3 +20,13 @@ const boardMethods = {
     return arr;
   },
 };
+
+const Knight = {
+  step: [
+    // Array offsets for movement of knight
+    [-2, -1], [-1, -2], // Upper left
+    [-2, 1], [-1, 2], // Upper right
+    [2, -1], [1, -2], // Bottom left
+    [2, 1], [1, 2], // Bottom right
+  ],
+}
