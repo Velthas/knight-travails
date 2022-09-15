@@ -1,3 +1,12 @@
+// Graph vertex factory
+function Vertex(position, legalMoves, parentReference) {
+  const vertex = {};
+  vertex.position = position; // An array bearing y and x of the vertex [y, x]
+  vertex.edges = legalMoves; // All edges of the vertex
+  vertex.parent = parentReference; // A reference to the parent move (for backtracking)
+  return vertex;
+}
+
 // Board factory
 function BoardCreate(size) {
   const board = Object.create(boardMethods);
@@ -50,4 +59,30 @@ const Knight = {
     [2, -1], [1, -2], // Bottom left
     [2, 1], [1, 2], // Bottom right
   ],
-}
+  createGraph(start) {
+    const board = BoardCreate(8); // Create an instance of a board
+    const parentVertex = null; // Root has no parent, therefore null on initialization
+    // Generate the root of graph
+    const rootVertex = Vertex(start, board.legalMoves(start, this.step), parentVertex);
+    // Sets the knight first position as visited to avoid backtracking
+    board.setVisited([rootVertex.position]);
+    const queue = [rootVertex]; // Use a queue to go over the moves in breadth-first order
+
+    while (queue.length !== 0) {
+      const currentVertex = queue[0]; // Extract the vertex to work on
+      // Returns the non-made legal moves
+      currentVertex.edges = currentVertex.edges.filter((move) => board.filterVisited(move));
+      board.setVisited(currentVertex.edges); // Sets all new possible positions as visited
+      currentVertex.edges.forEach((edge, index) => {
+        // Make a vertex out of all the positions
+        const newVertex = Vertex(edge, board.legalMoves(edge, this.step), currentVertex);
+        // Updates the simple coordinate with a vertex made out of it
+        currentVertex.edges[index] = newVertex;
+        // Then enqueue it. All vertexes will be processed in breadth-first order.
+        queue.push(newVertex);
+      });
+      queue.shift();
+    }
+    return rootVertex; // At last return the root of the graph
+  },
+};
