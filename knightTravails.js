@@ -51,19 +51,20 @@ const boardMethods = {
   },
 };
 
-const Knight = {
-  step: [
+const Knight = () => {
+  const step = [
     // Array offsets for movement of knight
     [-2, -1], [-1, -2], // Upper left
     [-2, 1], [-1, 2], // Upper right
     [2, -1], [1, -2], // Bottom left
     [2, 1], [1, 2], // Bottom right
-  ],
-  createGraph(start) {
+  ];
+
+  const createGraph = (start) => {
     const board = BoardCreate(8); // Create an instance of a board
     const parentVertex = null; // Root has no parent, therefore null on initialization
     // Generate the root of graph
-    const rootVertex = Vertex(start, board.legalMoves(start, this.step), parentVertex);
+    const rootVertex = Vertex(start, board.legalMoves(start, step), parentVertex);
     // Sets the knight first position as visited to avoid backtracking
     board.setVisited([rootVertex.position]);
     const queue = [rootVertex]; // Use a queue to go over the moves in breadth-first order
@@ -75,7 +76,7 @@ const Knight = {
       board.setVisited(currentVertex.edges); // Sets all new possible positions as visited
       currentVertex.edges.forEach((edge, index) => {
         // Make a vertex out of all the positions
-        const newVertex = Vertex(edge, board.legalMoves(edge, this.step), currentVertex);
+        const newVertex = Vertex(edge, board.legalMoves(edge, step), currentVertex);
         // Updates the simple coordinate with a vertex made out of it
         currentVertex.edges[index] = newVertex;
         // Then enqueue it. All vertexes will be processed in breadth-first order.
@@ -84,33 +85,38 @@ const Knight = {
       queue.shift();
     }
     return rootVertex; // At last return the root of the graph
-  },
-  printPath(solutionArray) {
+  };
+
+  const printPath = (solutionArray) => {
     const firstLine = `Congratulations! You made it in ${solutionArray.length} moves! Here is your path:\n`;
     let pathString = '';
     for (let i = 0; i < solutionArray.length; i++) {
       pathString += `[${solutionArray[i]}]\n`;
     }
     console.log(firstLine + pathString);
-  },
-  backtrack(vertex, moves = []) {
+  };
+
+  const backtrack = (vertex, moves = []) => {
     if (vertex.parent === null) {
       moves.push(vertex.position);
       return moves;
     }
     moves.push(vertex.position);
-    return Knight.backtrack(vertex.parent, moves);
-  },
-  knightMove(start, end) {
+    return backtrack(vertex.parent, moves);
+  };
+
+  const knightMove = (start, end) => {
     // If start and end are same, return either
-    if (start[0] === end[0] && start[1] === end[1]) return this.printPath(start);
-    const queue = [this.createGraph(start)]; // Initiate queue with root of graph
+    if (start[0] === end[0] && start[1] === end[1]) return printPath(start);
+    const queue = [createGraph(start)]; // Initiate queue with root of graph
     while (queue.length !== 0) { // Iteratively go down the graph in breadth-first fashion
       // Trace the origin of solution and reverse the array to get correct path
       if (queue[0].position[0] === end[0] && queue[0].position[1] === end[1]) {
-        return this.printPath((this.backtrack(queue[0])).reverse()); }
+        return printPath((backtrack(queue[0])).reverse()); }
       queue[0].edges.forEach((edge) => queue.push(edge));
       queue.shift();
     }
-  },
+  };
+
+  return { knightMove };
 };
