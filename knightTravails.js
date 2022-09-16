@@ -21,7 +21,7 @@ function BoardCreate(size) {
       arr.push(newRow);
     }
     return arr;
-  }
+  };
 
   const board = createBoard();
 
@@ -35,14 +35,14 @@ function BoardCreate(size) {
       legalMovements.push(legalPosition);
     }
     return legalMovements;
-  }
+  };
 
   const setVisited = (movesArray) => {
     // Sets a board position ([0, 0]) to visited
     movesArray.forEach(
       (move) => (board[move[0]][move[1]].isVisited = true),
     );
-  }
+  };
 
   // if move has already been made, returns false
   const filterVisited = (move) => board[move[0]][move[1]].isVisited !== true;
