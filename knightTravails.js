@@ -1,4 +1,3 @@
-/* eslint-disable func-names */
 // Graph vertex factory
 function Vertex(position, legalMoves, parentReference) {
   const vertex = {};
