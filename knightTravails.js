@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 // Graph vertex factory
 function Vertex(position, legalMoves, parentReference) {
   const vertex = {};
@@ -17,7 +18,7 @@ function BoardCreate(size) {
 
 // Board methods for inheritance
 const boardMethods = {
-  createBoard () {
+  createBoard() {
     const arr = [];
     for (let i = 0; i < this.size; i++) {
       const newRow = [];
@@ -84,5 +85,25 @@ const Knight = {
       queue.shift();
     }
     return rootVertex; // At last return the root of the graph
+  },
+  backtrack(vertex, moves = []) {
+    if (vertex.parent === null) {
+      moves.push(vertex.position);
+      return moves;
+    }
+    moves.push(vertex.position);
+    return Knight.backtrack(vertex.parent, moves);
+  },
+  knightMove(start, end) {
+    // If start and end are same, return either
+    if (start[0] === end[0] && start[1] === end[1]) return start;
+    const queue = [this.createGraph(start)]; // Initiate queue with root of graph
+    while (queue.length !== 0) { // Iteratively go down the graph in breadth-first fashion
+      // Trace the origin of solution and reverse the array to get correct path
+      if (queue[0].position[0] === end[0] && queue[0].position[1] === end[1]) {
+        return (this.backtrack(queue[0])).reverse(); }
+      queue[0].edges.forEach((edge) => queue.push(edge));
+      queue.shift();
+    }
   },
 };
