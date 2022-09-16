@@ -86,6 +86,14 @@ const Knight = {
     }
     return rootVertex; // At last return the root of the graph
   },
+  printPath(solutionArray) {
+    const firstLine = `Congratulations! You made it in ${solutionArray.length} moves! Here is your path:\n`;
+    let pathString = '';
+    for (let i = 0; i < solutionArray.length; i++) {
+      pathString += `[${solutionArray[i]}]\n`;
+    }
+    console.log(firstLine + pathString);
+  },
   backtrack(vertex, moves = []) {
     if (vertex.parent === null) {
       moves.push(vertex.position);
@@ -96,12 +104,12 @@ const Knight = {
   },
   knightMove(start, end) {
     // If start and end are same, return either
-    if (start[0] === end[0] && start[1] === end[1]) return start;
+    if (start[0] === end[0] && start[1] === end[1]) return this.printPath(start);
     const queue = [this.createGraph(start)]; // Initiate queue with root of graph
     while (queue.length !== 0) { // Iteratively go down the graph in breadth-first fashion
       // Trace the origin of solution and reverse the array to get correct path
       if (queue[0].position[0] === end[0] && queue[0].position[1] === end[1]) {
-        return (this.backtrack(queue[0])).reverse(); }
+        return this.printPath((this.backtrack(queue[0])).reverse()); }
       queue[0].edges.forEach((edge) => queue.push(edge));
       queue.shift();
     }
