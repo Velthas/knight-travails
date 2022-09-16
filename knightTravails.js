@@ -9,47 +9,46 @@ function Vertex(position, legalMoves, parentReference) {
 
 // Board factory
 function BoardCreate(size) {
-  const board = Object.create(boardMethods);
-  board.size = size;
-  board.board = board.createBoard();
-  return board;
-}
+  const boardSize = size;
 
-// Board methods for inheritance
-const boardMethods = {
-  createBoard() {
+  const createBoard = () => {
     const arr = [];
-    for (let i = 0; i < this.size; i++) {
+    for (let i = 0; i < boardSize; i++) {
       const newRow = [];
-      for (let j = 0; j < this.size; j++) {
+      for (let j = 0; j < boardSize; j++) {
         newRow.push({ isVisited: false }); // A way of tracking which tiles have been visited
       }
       arr.push(newRow);
     }
     return arr;
-  },
-  legalMoves(position, step) {
+  }
+
+  const board = createBoard();
+
+  const legalMoves = (position, step) => {
     // Returns array of legal moves from position
     const legalMovements = [];
     for (let i = 0; i < step.length; i++) {
-      if (position[0] + step[i][0] < 0 || position[0] + step[i][0] > this.size - 1
-        || position[1] + step[i][1] < 0 || position[1] + step[i][1] > this.size - 1) continue;
+      if (position[0] + step[i][0] < 0 || position[0] + step[i][0] > size - 1
+        || position[1] + step[i][1] < 0 || position[1] + step[i][1] > size - 1) continue;
       const legalPosition = [position[0] + step[i][0], position[1] + step[i][1]];
       legalMovements.push(legalPosition);
     }
     return legalMovements;
-  },
-  setVisited(movesArray) {
+  }
+
+  const setVisited = (movesArray) => {
     // Sets a board position ([0, 0]) to visited
     movesArray.forEach(
-      (move) => (this.board[move[0]][move[1]].isVisited = true),
+      (move) => (board[move[0]][move[1]].isVisited = true),
     );
-  },
-  filterVisited(move) {
-    // if move has already been made, returns false
-    return this.board[move[0]][move[1]].isVisited !== true;
-  },
-};
+  }
+
+  // if move has already been made, returns false
+  const filterVisited = (move) => board[move[0]][move[1]].isVisited !== true;
+
+  return { filterVisited, legalMoves, setVisited };
+}
 
 const Knight = () => {
   const step = [
